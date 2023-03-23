@@ -28,6 +28,7 @@ excusesRouter.post("/add", validateAccessToken, async (req, res) => {
 
   let data = {
     excuse: req.body.excuse,
+    email: req.body.email,
   };
 
   try {
