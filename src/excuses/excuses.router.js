@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAdminMessage, getProtectedMessage } = require("./excuses.service");
+const { getAdminMessage } = require("./excuses.service");
 const { validateAccessToken } = require("../middleware/auth0.middleware.js");
 
 // This will help us connect to the database
@@ -16,12 +16,6 @@ excusesRouter.get("/public", async (req, res) => {
   } catch (error) {
     console.log("An error occurred pulling the excuses. " + error);
   }
-});
-
-excusesRouter.get("/protected", validateAccessToken, (req, res) => {
-  const message = getProtectedMessage();
-
-  res.status(200).json(message);
 });
 
 excusesRouter.get("/admin", validateAccessToken, (req, res) => {
