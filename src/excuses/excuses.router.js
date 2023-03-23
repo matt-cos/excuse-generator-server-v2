@@ -7,7 +7,7 @@ const dbo = require("../db/conn");
 
 const excusesRouter = express.Router();
 
-excusesRouter.get("/public", async (req, res) => {
+excusesRouter.get("/", async (req, res) => {
   const db_connect = dbo.getDb();
 
   try {
@@ -18,10 +18,24 @@ excusesRouter.get("/public", async (req, res) => {
   }
 });
 
-excusesRouter.get("/admin", validateAccessToken, (req, res) => {
+excusesRouter.get("/add", validateAccessToken, (req, res) => {
   const message = getAdminMessage();
 
   res.status(200).json(message);
+
+  //   let db_connect = dbo.getDb();
+
+//   let data = {
+//     excuse: req.body.excuse,
+//   };
+
+//   try {
+//     const excuse = await db_connect.collection("excuses").insertOne(data);
+//     console.log(excuse.insertedId); // this will be the ID that we use to tie this to the USER
+//     res.json(excuse);
+//   } catch (error) {
+//     console.log(error);
+//   }
 });
 
 module.exports = { excusesRouter };
