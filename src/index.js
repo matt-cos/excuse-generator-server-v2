@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const express = require("express");
 const helmet = require("helmet");
 const nocache = require("nocache");
-const { messagesRouter } = require("./messages/messages.router");
+const { excusesRouter } = require("./excuses/excuses.router");
 const { errorHandler } = require("./middleware/error.middleware");
 const { notFoundHandler } = require("./middleware/not-found.middleware");
 
@@ -14,6 +14,12 @@ if (!(process.env.PORT && process.env.CLIENT_ORIGIN_URL)) {
     "Missing required environment variables. Check docs for more info."
   );
 }
+
+// This will help us connect to the database
+const dbo = require("./db/conn");
+
+// This help convert the id from string to ObjectId for the _id.
+const ObjectId = require("mongodb").ObjectId;
 
 const PORT = parseInt(process.env.PORT, 10);
 const CLIENT_ORIGIN_URL = process.env.CLIENT_ORIGIN_URL;
@@ -58,11 +64,16 @@ app.use(
 );
 
 app.use("/api", apiRouter);
-apiRouter.use("/messages", messagesRouter);
+apiRouter.use("/excuses", excusesRouter);
 
 app.use(errorHandler);
 app.use(notFoundHandler);
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
+  // perform a database connection when server starts
+  await dbo.connectToServer(function (err) {
+    if (err) console.error(err);
+  });
+
   console.log(`Listening on port ${PORT}`);
 });
