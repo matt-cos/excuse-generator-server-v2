@@ -1,5 +1,4 @@
 const express = require("express");
-const { getAdminMessage } = require("./excuses.service");
 const { validateAccessToken } = require("../middleware/auth0.middleware.js");
 
 // This will help us connect to the database
@@ -19,23 +18,24 @@ excusesRouter.get("/", async (req, res) => {
 });
 
 excusesRouter.get("/add", validateAccessToken, (req, res) => {
-  const message = getAdminMessage();
+  res.status(200).json({
+    text: "This is an admin message.",
+  });
+});
 
-  res.status(200).json(message);
+excusesRouter.post("/add", validateAccessToken, async (req, res) => {
+  let db_connect = dbo.getDb();
 
-  //   let db_connect = dbo.getDb();
+  let data = {
+    excuse: req.body.excuse,
+  };
 
-//   let data = {
-//     excuse: req.body.excuse,
-//   };
-
-//   try {
-//     const excuse = await db_connect.collection("excuses").insertOne(data);
-//     console.log(excuse.insertedId); // this will be the ID that we use to tie this to the USER
-//     res.json(excuse);
-//   } catch (error) {
-//     console.log(error);
-//   }
+  try {
+    const excuse = await db_connect.collection("excuses").insertOne(data);
+    res.status(200).json(excuse);
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = { excusesRouter };
